@@ -21,8 +21,10 @@ router.get('/stats/gender', (req, res) => {
   console.log(req.query)
   var itemID = req.query.id
 
-  query = "select (select count(*) from sales where gender = 'f') as sales_f, (select count(*) from sales where gender = 'm') as sales_m, (select count(*) from sales where itemID = ?) as sales_total;"
-  connection.query(query,[quantity], function(err, rows, fields) {
+  query = "select *, sales_m/sales_total as m_p, sales_f/sales_total as f_p from (select (select count(*) from sales where gender = 'f' and itemName = ?) as sales_f,
+(select count(*) from sales where gender = 'm' and itemName = ?) as sales_m,
+(select count(*) from sales where itemName = ?) as sales_total) as gender_stats;"
+  connection.query(query,[itemID,itemID,itemID], function(err, rows, fields) {
       if (err) throw err;
       responseMessage.stats = rows[0];
       res.send(responseMessage);
@@ -38,10 +40,14 @@ router.get('/stats/age', (req, res) => {
 
   // query params
   console.log(req.query)
-  var itemID = req.query.id
+  var item = req.query.item
 
-  query = "select (select count(*) from sales where age < 18) as sales_age_u18, (select count(*) from sales where age > 18 and age < 30) as sales_age_u30, (select count(*) from sales where age > 30 and age < 50) as sales_age_u50, (select count(*) from sales where age > 50) as sales_age_o50, (select count(*) from sales where itemID = ?) as sales_total;"
-  connection.query(query,[itemID], function(err, rows, fields) {
+  query = "select (select count(*) from sales where itemName = ? and age <= 18) as sales_age_u18, 
+(select count(*) from sales where itemName = ? and age > 18 and age <= 30) as sales_age_u30, 
+(select count(*) from sales where itemName = ? and age > 31 and age <= 50) as sales_age_u50, 
+(select count(*) from sales where itemName = ? and age > 50) as sales_age_o50, 
+(select count(*) from sales where itemName = ?) as sales_total;"
+  connection.query(query,[item,item,item,item,item], function(err, rows, fields) {
       if (err) throw err;
       responseMessage.stats = rows[0];
       res.send(responseMessage);
@@ -56,12 +62,12 @@ router.get('/stats/age', (req, res) => {
 router.post('/sales', (req, res) => {
   // query params
   console.log(req.body)
-  var itemID = req.body.item;
+  var item = req.body.item;
   var age = req.body.buyer.age;
   var gender = req.body.buyer.gender;
   var mood = req.body.buyer.mood;
 
-  connection.query('insert into sales values (DEFAULT,?,?,?,?,DEFAULT)', [itemID, age, gender, mood], function(err, results) {
+  connection.query('insert into sales values (DEFAULT,?,?,?,?,DEFAULT)', [item, age, gender, mood], function(err, results) {
   if (err) throw err;
   console.log('Sales submitted!');
 
