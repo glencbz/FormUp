@@ -1,19 +1,35 @@
 {
-  "name": "formup",
+  "name": "FormUp",
   "version": "1.0.0",
   "description": "FormUp === A smart form language for modern use",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js --exec babel-node",
+    "debug": "babel-node --debug-brk",
+    "build": "babel src -d dist",
+    "serve": "node dist/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/glencbz/FormUp.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/glencbz/FormUp/issues"
   },
-  "homepage": "https://github.com/glencbz/FormUp#readme"
+  "homepage": "https://github.com/glencbz/FormUp#readme",
+  "dependencies": {
+    "cors": "^2.7.1",
+    "express": "^4.13.4",
+    "morgan": "^1.7.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.6.4",
+    "babel-node-debug": "^2.0.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "nodemon": "^1.9.1"
+  }
 }
