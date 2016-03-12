@@ -42,11 +42,12 @@ router.get('/stats/age', (req, res) => {
   console.log(req.query)
   var item = req.query.item
 
-  query = "select (select count(*) from sales where itemName = ? and age <= 18) as sales_age_u18, 
+  query = "select *, sales_age_u18/sales_total, sales_age_u30/sales_total, sales_age_u50/sales_total, sales_age_o50/sales_total,
+sales_total as p_age_u18 from (select (select count(*) from sales where itemName = ? and age <= 18) as sales_age_u18, 
 (select count(*) from sales where itemName = ? and age > 18 and age <= 30) as sales_age_u30, 
 (select count(*) from sales where itemName = ? and age > 31 and age <= 50) as sales_age_u50, 
 (select count(*) from sales where itemName = ? and age > 50) as sales_age_o50, 
-(select count(*) from sales where itemName = ?) as sales_total;"
+(select count(*) from sales where itemName = ?) as sales_total) as sales_temp;"
   connection.query(query,[item,item,item,item,item], function(err, rows, fields) {
       if (err) throw err;
       responseMessage.stats = rows[0];
