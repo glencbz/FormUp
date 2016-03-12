@@ -1,1 +1,3 @@
-FormUp\n===\nA smart form language for modern use
+FormUp
+===
+A smart form language for modern use
