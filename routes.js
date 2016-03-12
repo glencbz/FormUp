@@ -63,17 +63,18 @@ sales_total as p_age_u18 from (select (select count(*) from sales where itemName
 router.post('/sales', (req, res) => {
   // query params
   console.log(req.body)
-  var item = req.body.item;
+
+  var order = req.body.order;
   var age = req.body.buyer.age;
   var gender = req.body.buyer.gender;
   var mood = req.body.buyer.mood;
+  for (var item in order){
+      connection.query('insert into sales values (DEFAULT,?,?,?,?,DEFAULT)', [item, age, gender, mood], function(err, results) {
+      if (err) throw err;
+      console.log('Sales submitted!');
 
-  connection.query('insert into sales values (DEFAULT,?,?,?,?,DEFAULT)', [item, age, gender, mood], function(err, results) {
-  if (err) throw err;
-  console.log('Sales submitted!');
-
-  });
-
+      });  
+  }
   // process data here
   // run optimizer here
 
