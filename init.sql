@@ -9,6 +9,7 @@ create table items(
 create table sales(
 	saleID int(13) PRIMARY KEY AUTO_INCREMENT,
     itemName char(26) REFERENCES items.itemName,
+    qty int(4),
     age int(2),
     gender varchar(1),
     expression varchar(10),
@@ -20,14 +21,14 @@ insert into items values('banana');
 insert into items values('tomato');
 insert into items values('bratwurst');
 
-insert into sales values(DEFAULT, 'apple', 24, 'f', 'happy', DEFAULT);
-insert into sales values(DEFAULT, 'apple', 30, 'f', 'happy', DEFAULT);
-insert into sales values(DEFAULT, 'apple', 45, 'm', 'happy', DEFAULT);
-insert into sales values(DEFAULT, 'bratwurst', 50, 'm', 'angry', DEFAULT);
-insert into sales values(DEFAULT, 'bratwurst', 18, 'f', 'happy', DEFAULT);
-insert into sales values(DEFAULT, 'bratwurst', 24, 'm', 'happy', DEFAULT);
-insert into sales values(DEFAULT, 'bratwurst', 23, 'f', 'happy', DEFAULT);
-insert into sales values(DEFAULT, 'bratwurst', 24, 'm', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'apple', 1, 24, 'f', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'apple', 1, 30, 'f', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'apple', 1, 45, 'm', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'bratwurst', 1, 50, 'm', 'angry', DEFAULT);
+insert into sales values(DEFAULT, 'bratwurst', 1, 18, 'f', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'bratwurst', 1, 24, 'm', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'bratwurst', 1, 23, 'f', 'happy', DEFAULT);
+insert into sales values(DEFAULT, 'bratwurst', 1, 24, 'm', 'happy', DEFAULT);
 
 select *, sales_m/sales_total as m_p, sales_f/sales_total as f_p from (select (select count(*) from sales where gender = 'f' and itemName = 'apple') as sales_f,
 (select count(*) from sales where gender = 'm' and itemName = 'apple') as sales_m,
