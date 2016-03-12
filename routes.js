@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/stats/gender', (req, res) => {
+router.get('/stats/item/gender', (req, res) => {
 
   // query params
   console.log(req.query)
@@ -36,7 +36,7 @@ router.get('/stats/gender', (req, res) => {
 
 });
 
-router.get('/stats/age', (req, res) => {
+router.get('/stats/item/age', (req, res) => {
 
   // query params
   console.log(req.query)
@@ -58,6 +58,55 @@ sales_total as p_age_u18 from (select (select count(*) from sales where itemName
   // run optimizer here
   // res.sendStatus(200)
 
+});
+
+router.get('/stats/gender', (req, res) => {
+
+  // query params
+  console.log(req.query)
+  var gender = req.query.gender
+
+  query = `select *, sales_a/sales_total as a_p, sales_o/sales_total as o_p, sales_ba/sales_total as ba_p, 
+sales_t/sales_total as t_p, sales_br/sales_total as br_p from (select 
+(select count(*) from sales where gender = ? and itemName = 'apple') as sales_a,
+(select count(*) from sales where gender = ? and itemName = 'orange') as sales_o,
+(select count(*) from sales where gender = ? and itemName = 'banana') as sales_ba,
+(select count(*) from sales where gender = ? and itemName = 'tomato') as sales_t,
+(select count(*) from sales where gender = ? and itemName = 'bratwurst') as sales_br,
+(select count(*) from sales where gender = ?) as sales_total) as gender_stats;`;
+  connection.query(query,[gender,gender,gender,gender,gender,gender], function(err, rows, fields) {
+      if (err) throw err;
+      responseMessage.stats = rows[0];
+      res.send(responseMessage);
+  });
+  // process data here
+  // run optimizer here
+  // res.sendStatus(200)
+});
+
+router.get('/stats/age', (req, res) => {
+
+  // query params
+  console.log(req.query)
+  var lower = req.query.lower;
+  var lower = req.query.upper;
+
+  query = `select *, sales_a/sales_total as a_p, sales_o/sales_total as o_p, sales_ba/sales_total as ba_p, 
+sales_t/sales_total as t_p, sales_br/sales_total as br_p from (select 
+(select count(*) from sales where age >= ? and age < ? and itemName = 'apple') as sales_a,
+(select count(*) from sales where age >= ? and age < ? and itemName = 'orange') as sales_o,
+(select count(*) from sales where age >= ? and age < ? and itemName = 'banana') as sales_ba,
+(select count(*) from sales where age >= ? and age < ? and itemName = 'tomato') as sales_t,
+(select count(*) from sales where age >= ? and age < ? and itemName = 'bratwurst') as sales_br,
+(select count(*) from sales where age >= ? and age < ? ) as sales_total) as gender_stats;`;
+  connection.query(query,[lower,upper,lower,upper,lower,upper,lower,upper,lower,upper], function(err, rows, fields) {
+      if (err) throw err;
+      responseMessage.stats = rows[0];
+      res.send(responseMessage);
+  });
+  // process data here
+  // run optimizer here
+  // res.sendStatus(200)
 });
 
 router.post('/sales', (req, res) => {
