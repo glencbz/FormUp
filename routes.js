@@ -109,6 +109,27 @@ sales_t/sales_total as t_p, sales_br/sales_total as br_p from (select
   // res.sendStatus(200)
 });
 
+router.get('/regression/age/bratwurst', (req, res) => {
+
+  // query params
+  console.log(req.query)
+
+  query = `select *, x*slope + intersect as ynew from (select *, (xybar - xbar*ybar)/(x2bar - xbar*xbar) as slope, 
+ybar - (xybar - xbar*ybar)/(x2bar - xbar*xbar)*xbar as intersect, pow((xybar - xbar*ybar)/sqrt((x2bar - xbar*xbar)*(y2bar - ybar*ybar)),2) as r2 from
+(select * from ((select avg(x) as xbar, avg(y) as ybar, avg(xy) as xybar, avg(x2) as x2bar, avg(y2) as y2bar from
+(select age as x, sum(qty) as y, age*sum(qty) as xy, age*age as x2, sum(qty)*sum(qty) as y2 from sales where itemName='bratwurst' group by age) as xy) as xybar join
+(select age as x, sum(qty) as y, age*sum(qty) as xy, age*age as x2, sum(qty)*sum(qty) as y2 from sales where itemName='bratwurst' group by age) as xy2)) as xyall) as regression`;
+
+  connection.query(query, function(err, rows, fields) {
+      if (err) throw err;
+      responseMessage.stats = rows[0];
+      res.send(responseMessage);
+  });
+  // process data here
+  // run optimizer here
+  // res.sendStatus(200)
+});
+
 router.post('/sales', (req, res) => {
   // query params
   console.log(req.body)
